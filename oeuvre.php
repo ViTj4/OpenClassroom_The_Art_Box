@@ -1,38 +1,37 @@
 <?php
     require 'header.php';
-    require 'oeuvres.php';
+    require 'database/bdd.php';
+    require 'model/oeuvres.php';
 
-    // Si l'URL ne contient pas d'id, on redirige sur la page d'accueil
-    if(empty($_GET['id'])) {
+    // Redirect to main page if there is no id
+    if (empty($_GET['id'])) {
         header('Location: index.php');
+        exit;
     }
 
-    $oeuvre = null;
+    $pdo = connexion();
+    $id  = intval($_GET['id']);
+    $oeuvre = findOeuvreById($pdo, $id);
 
-    // On parcourt les oeuvres du tableau afin de rechercher celle qui a l'id précisé dans l'URL
-    foreach($oeuvres as $o) {
-        // intval permet de transformer l'id de l'URL en un nombre (exemple : "2" devient 2)
-        if($o['id'] === intval($_GET['id'])) {
-            $oeuvre = $o;
-            break; // On stoppe le foreach si on a trouvé l'oeuvre
-        }
-    }
-
-    // Si aucune oeuvre trouvé, on redirige vers la page d'accueil
-    if(is_null($oeuvre)) {
+    // Redirect to main page if doesn't exist
+    if (!$oeuvre) {
         header('Location: index.php');
+        exit;
     }
 ?>
 
 <article id="detail-oeuvre">
     <div id="img-oeuvre">
-        <img src="<?= $oeuvre['image'] ?>" alt="<?= $oeuvre['titre'] ?>">
+        <img
+            src="<?= htmlspecialchars($oeuvre['image'], ENT_QUOTES, 'UTF-8') ?>"
+            alt="<?= htmlspecialchars($oeuvre['titre'], ENT_QUOTES, 'UTF-8') ?>"
+        >
     </div>
     <div id="contenu-oeuvre">
-        <h1><?= $oeuvre['titre'] ?></h1>
-        <p class="description"><?= $oeuvre['artiste'] ?></p>
+        <h1><?= htmlspecialchars($oeuvre['titre'], ENT_QUOTES, 'UTF-8') ?></h1>
+        <p class="description"><?= htmlspecialchars($oeuvre['artiste'], ENT_QUOTES, 'UTF-8') ?></p>
         <p class="description-complete">
-             <?= $oeuvre['description'] ?>
+            <?= htmlspecialchars($oeuvre['description'], ENT_QUOTES, 'UTF-8') ?>
         </p>
     </div>
 </article>
