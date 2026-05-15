@@ -1,9 +1,14 @@
 <?php
     require 'header.php';
-    require 'oeuvres.php';
+    require 'database/bdd.php';
+    require 'model/oeuvres.php';
+
+    $pdo     = connexion();
+    $oeuvres = findAllOeuvres($pdo);
+
 ?>
 <div id="liste-oeuvres">
-    <?php foreach($oeuvres as $oeuvre): ?>
+    <?php foreach ($oeuvres as $oeuvre): ?>
         <article class="oeuvre">
             <a href="oeuvre.php?id=<?= $oeuvre['id'] ?>">
                 <img src="<?= $oeuvre['image'] ?>" alt="<?= $oeuvre['titre'] ?>">
@@ -11,6 +16,7 @@
                 <p class="description"><?= $oeuvre['artiste'] ?></p>
             </a>
         </article>
-    <?php endforeach; ?>
+    <?php endforeach ?>
 </div>
-<?php require 'footer.php'; ?>
+
+<?php require 'footer.php' ?>
